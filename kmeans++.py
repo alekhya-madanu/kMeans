@@ -30,7 +30,7 @@ c[0,:]=values[3,:]
 def distance(x,y):
     a=la.norm(np.subtract(x,y))
     return a
-
+# min_dist finds the distance between the given point x and the centre which is closest to it
 def min_dist(x,c):
     min=distance(c[0,:],x)
     for count,ele in enumerate(c):
@@ -38,23 +38,26 @@ def min_dist(x,c):
         if d<min :
             min=d
     return min
-prev=0
+# the following code is to assign centres
 for x in range(1,k):
+#     cum_sum holds the cumulative sum of the squares of D where D= distance between  the point and its closest centre
+
+    prev=0
     for i in range(n):
-        d=min_dist(values[i,:],c)
-        cum_sum[i]=d*d + prev
+        cum_sum[i]=np.square(min_dist(values[i,:],c)) + prev
         prev=cum_sum[i]
 
     total=prev
+#     with the next step, we make sure cum_sum holds only values from 0 to 1
     cum_sum = cum_sum/total
-
+# "random" is a random number between 0 and 1
     random = np.random.random()
     for i in range(n):
         if cum_sum[i]>random:
             c[x,:]=values[i,:]
             break
-
-plt.scatter(c[:,0], c[:,1],marker='*', c='orange', s=150)
+# the centres initialised with the kmeans++ method are plotted in green
+plt.scatter(c[:,0], c[:,1],marker='*', c='green', s=150)
 dist=np.zeros(k)
 classify=np.zeros(n)
 
@@ -83,7 +86,6 @@ while error>0.0001 :
     error=la.norm(c-prev_c)
 # the following code is for plotting our data, the centroids are marked with '*'
 plt.scatter(values[:,0],values[:,1],c='yellow',s=20)
-# plt.scatter(c[:,0], c[:,1],marker='*', c='orange', s=150)
+plt.scatter(c[:,0], c[:,1],marker='*', c='orange', s=150)
 plt.show()
-# you can see that the values printed from the next line are very close to the points we centred our data around
-print(time.time()-start)
+
